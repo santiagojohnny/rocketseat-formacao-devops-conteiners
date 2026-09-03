@@ -25,4 +25,4 @@ jobs:
     - run: yarn run test
 
     - name: Build docker image
-    - run: docker build -t api-rocket:latest .
+      run: docker build -t api-rocket:latest .
