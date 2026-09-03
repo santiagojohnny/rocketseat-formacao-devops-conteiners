@@ -3,7 +3,7 @@ name: CI
 on: 
   push:
     branches:
-    - main
+      - main
 
 jobs:
   build:
@@ -11,18 +11,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ 16,18,20 ]
+        node: [ 18, 20 ] # Note: Node 16 is End-of-Life and unsupported in setup-node@v4
 
     steps: 
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup node | ${{ matrix.node }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node }}
-        cache: 'yarn'
-    - run: yarn
-    - run: yarn run test
+      - name: Setup node | ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'yarn'
 
-    - name: Build docker image
-      run: docker build -t api-rocket:latest .
+      - name: Enable Corepack
+        run: corepack enable
+
+      - run: yarn
+      - run: yarn run test
+
+      - name: Build docker image
+        run: docker build -t api-rocket:latest .
